@@ -1,0 +1,29 @@
+[ {
+  "id" : 1,
+  "firstName" : "Vasya",
+  "secondName" : "Vaskin"
+}, {
+  "id" : 2,
+  "firstName" : "Tapok",
+  "secondName" : "Tapkov"
+}, {
+  "id" : 3,
+  "firstName" : "Master",
+  "secondName" : "Gymov"
+}, {
+  "id" : 4,
+  "firstName" : "Arthas",
+  "secondName" : "Menthyl"
+}, {
+  "id" : 5,
+  "firstName" : "Varian",
+  "secondName" : "Wrynn"
+}, {
+  "id" : 6,
+  "firstName" : "arrayDebil1",
+  "secondName" : " Debilov"
+}, {
+  "id" : 7,
+  "firstName" : "arrayDebil2",
+  "secondName" : "Debilov"
+} ]
