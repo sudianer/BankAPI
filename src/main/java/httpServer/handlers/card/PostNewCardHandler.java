@@ -1,11 +1,11 @@
-package httpServer.handlers;
+package httpServer.handlers.card;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import model.Account;
+import httpServer.utils.ServiceContainer;
+import model.Card;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.AccountService;
 import util.JSONparser;
 
 import java.io.IOException;
@@ -13,16 +13,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Scanner;
 
-public class PostNewAccountHandler implements HttpHandler {
+public class PostNewCardHandler  implements HttpHandler {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PostNewAccountHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PostNewCardHandler.class);
 
-	AccountService accountService;
-	long userID;
+	long accountId;
 
-	public PostNewAccountHandler(AccountService accountService, long userID){
-		this.accountService = accountService;
-		this.userID = userID;
+	public PostNewCardHandler(long accountId){
+		this.accountId = accountId;
 	}
 
 	@Override
@@ -34,16 +32,16 @@ public class PostNewAccountHandler implements HttpHandler {
 		String response = "";
 		Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
 
-		Account account = JSONparser.fromJson(JSONparser.parse(scanner.nextLine()), Account.class);
+		Card card = JSONparser.fromJson(JSONparser.parse(scanner.nextLine()), Card.class);
 
-		assert account != null;
-		account = new Account.Builder(0)
-				.withNumber(account.getNumber())
-				.withCards(account.getCards())
-				.withUserID(userID)
+		assert card != null;
+		card = new Card.Builder(0)
+				.withNumber(card.getNumber())
+				.withAccountID(accountId)
+				.withBalance(card.getBalance())
 				.build();
 
-		accountService.create(account);
+		ServiceContainer.getCardService().create(card);
 
 		exchange.sendResponseHeaders(200, response.getBytes().length);
 

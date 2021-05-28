@@ -72,4 +72,13 @@ public class Card {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Card{" +
+                "id=" + id +
+                ", accountId=" + accountId +
+                ", balance=" + balance +
+                ", number='" + number + '\'' +
+                '}';
+    }
 }

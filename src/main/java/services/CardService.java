@@ -5,7 +5,7 @@ import repository.CardRepository;
 
 import java.util.List;
 
-public class CardService {
+public class CardService{
 
     CardRepository cardRepository;
 

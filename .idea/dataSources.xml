@@ -8,11 +8,11 @@
       <jdbc-url>jdbc:h2:$PROJECT_DIR$/../bankDatabase/bank</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="H2inMemory" uuid="ad4edf65-8df7-41ed-98dd-07bc94f5dbf5">
+    <data-source source="LOCAL" name="bank_test" uuid="42cbe14e-19d3-4f9a-bfaa-f5f22100e5d1">
       <driver-ref>h2.unified</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.h2.Driver</jdbc-driver>
-      <jdbc-url>jdbc:h2:mem:</jdbc-url>
+      <jdbc-url>jdbc:h2:$PROJECT_DIR$/../bankDatabase/bank_test</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

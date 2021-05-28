@@ -4,16 +4,12 @@ import httpServer.handlers.ROUTING;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class HandlerUtils {
     private final static Logger LOGGER = LoggerFactory.getLogger(HandlerUtils.class);
-
 
     public static Map<String, String> queryToMap(String query) {
         // query is null if not provided (e.g. localhost/path )
@@ -30,72 +26,90 @@ public class HandlerUtils {
 
         LOGGER.info("Started mapping path");
         if (path == null || path.isEmpty()) return Collections.emptyMap();
-        List<String> notEmptySplitPath = Stream.of(path.split("/"))
+        List<String> splitPath = Stream.of(path.split("/"))
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());
-        LOGGER.info("path size: " + notEmptySplitPath.size());
+        LOGGER.info("path size: " + splitPath.size());
 
         Map<ROUTING, String> pathMap = new HashMap<>();
 
-        for(int i = 0; i < notEmptySplitPath.size(); i++){
-
-            if(i == 0 && notEmptySplitPath.get(i).equalsIgnoreCase(ROUTING.USERS.toString())) {
-                pathMap.put(ROUTING.USERS, notEmptySplitPath.get(i));
-                LOGGER.info("Mapped as Users: " + ROUTING.USERS);
-            }
-
-            if(i == 1
-                    && notEmptySplitPath.get(i).equalsIgnoreCase(ROUTING.NEWUSER.toString())
-                    && notEmptySplitPath.size() == i+1){
-                pathMap.put(ROUTING.NEWUSER, notEmptySplitPath.get(i));
-                LOGGER.info("Mapped as NEW_USER: " + pathMap.get(ROUTING.NEWUSER));
-                break;
-            }
-
-            if(i == 1 && isInt(notEmptySplitPath.get(i))) {
-                pathMap.put(ROUTING.USER_ID, notEmptySplitPath.get(i));
-                LOGGER.info("Mapped as User_ID: " + pathMap.get(ROUTING.USER_ID));
-            }
-
-            if(i == 2 && notEmptySplitPath.get(i).equalsIgnoreCase(ROUTING.ACCOUNTS.toString())) {
-                pathMap.put(ROUTING.ACCOUNTS, notEmptySplitPath.get(i));
-                LOGGER.info("Mapped as Accounts: " + ROUTING.ACCOUNTS);
-            }
-
-            if(i == 3
-                    && notEmptySplitPath.get(i).equalsIgnoreCase(ROUTING.NEWACCOUNT.toString())
-                    && notEmptySplitPath.size() == i+1) {
-                pathMap.put(ROUTING.NEWACCOUNT, notEmptySplitPath.get(i));
-                LOGGER.info("Mapped as NEW_ACCOUNT: " + pathMap.get(ROUTING.NEWACCOUNT));
-                break;
-            }
-            if(i == 3 && isInt(notEmptySplitPath.get(i))) {
-                pathMap.put(ROUTING.ACCOUNT_ID, notEmptySplitPath.get(i));
-                LOGGER.info("Mapped as Account_ID: " + pathMap.get(ROUTING.ACCOUNT_ID));
-            }
-
-            if(i == 4 && notEmptySplitPath.get(i).equalsIgnoreCase(ROUTING.CARDS.toString())) {
-                pathMap.put(ROUTING.CARDS, notEmptySplitPath.get(i));
-                LOGGER.info("Mapped as Cards: " + ROUTING.CARDS);
-            }
-
-            if(i == 5
-                    && notEmptySplitPath.get(i).equalsIgnoreCase(ROUTING.NEWCARD.toString())
-                    && notEmptySplitPath.size() == i+1) {
-                pathMap.put(ROUTING.NEWCARD, notEmptySplitPath.get(i));
-                LOGGER.info("Mapped as NEW_CARD: " + pathMap.get(ROUTING.NEWCARD));
-                break;
-            }
-
-            if(i == 5 && isInt(notEmptySplitPath.get(i))) {
-                pathMap.put(ROUTING.CARD_ID, notEmptySplitPath.get(i));
-                LOGGER.info("Mapped as Cards_ID: " + pathMap.get(ROUTING.CARD_ID));
-            }
+        if(!isCorrectURI(splitPath)){
+            return Collections.emptyMap();
         }
+
+        for(int i = 0 ;i < splitPath.size(); i++)
+        {
+           if(i == ROUTING.USERS.ordinal())
+               pathMap.put(ROUTING.USERS, splitPath.get(ROUTING.USERS.ordinal()));
+
+           if(i == ROUTING.USER_ID.ordinal())
+               pathMap.put(ROUTING.USER_ID, splitPath.get(ROUTING.USER_ID.ordinal()));
+
+           if(i == ROUTING.ACCOUNTS.ordinal())
+               pathMap.put(ROUTING.ACCOUNTS, splitPath.get(ROUTING.ACCOUNTS.ordinal()));
+
+           if(i == ROUTING.ACCOUNT_ID.ordinal())
+               pathMap.put(ROUTING.ACCOUNT_ID, splitPath.get(ROUTING.ACCOUNT_ID.ordinal()));
+
+           if(i == ROUTING.CARDS.ordinal())
+               pathMap.put(ROUTING.CARDS, splitPath.get(ROUTING.CARDS.ordinal()));
+
+           if(i == ROUTING.CARD_ID.ordinal())
+               pathMap.put(ROUTING.CARD_ID, splitPath.get(ROUTING.CARD_ID.ordinal()));
+        }
+
         return pathMap;
     }
 
-    private static boolean isInt(String string){
+    private static boolean isCorrectURI(List<String> splitUri){
+        for(int i = 0; i < splitUri.size(); i++) {
+            if (i == ROUTING.USERS.ordinal() &&
+                    !splitUri.get(i).equalsIgnoreCase(ROUTING.USERS.toString())) {
+                LOGGER.info("Users fail");
+                return false;
+            }
+            if (i == ROUTING.USER_ID.ordinal()
+                    && (
+                        isInt(splitUri.get(i))
+                      ^ !splitUri.get(ROUTING.USER_ID.ordinal()).equalsIgnoreCase(ROUTING.NEWUSER.toString())
+                    )
+            ) {
+                LOGGER.info("User_ID / newuser fail, i=" + i);
+                return false;
+            }
+            if (i == ROUTING.ACCOUNTS.ordinal()
+                    && !splitUri.get(i).equalsIgnoreCase(ROUTING.ACCOUNTS.toString())) {
+                LOGGER.info("Accounts fail");
+                return false;
+            }
+            if (i == ROUTING.ACCOUNT_ID.ordinal()
+                    && (
+                        isInt(splitUri.get(ROUTING.ACCOUNT_ID.ordinal()))
+                        ^ !splitUri.get(ROUTING.ACCOUNT_ID.ordinal()).equalsIgnoreCase(ROUTING.NEWACCOUNT.toString())
+                    )
+            ) {
+                LOGGER.info("Account_ID / newAccount fail");
+                return false;
+            }
+            if (i == ROUTING.CARDS.ordinal()
+                    && !splitUri.get(ROUTING.CARDS.ordinal()).equalsIgnoreCase(ROUTING.CARDS.toString())) {
+                LOGGER.info("Cards fail");
+                return false;
+            }
+            if (i == ROUTING.CARD_ID.ordinal()
+                    && (
+                        isInt(splitUri.get(ROUTING.CARD_ID.ordinal()))
+                      ^ !splitUri.get(ROUTING.CARD_ID.ordinal()).equalsIgnoreCase(ROUTING.NEWCARD.toString())
+                    )
+            ) {
+                LOGGER.info("Card_id / newCard fail");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isInt(String string){
         try {
             Integer.parseInt(string);
         }catch (NumberFormatException e){

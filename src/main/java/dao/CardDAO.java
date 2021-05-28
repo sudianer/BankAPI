@@ -42,8 +42,11 @@ public class CardDAO {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        assert card != null;
-        LOGGER.info("Card selected from database, id: " + card.getId());
+        if(card == null){
+            LOGGER.info("No card with id: " + id);
+            return null;
+        }
+        LOGGER.info("Card selected from db, id: " + card.getId());
         return card;
     }
 
@@ -82,7 +85,7 @@ public class CardDAO {
             preparedStatement.executeUpdate();
             LOGGER.info("New card created");
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            LOGGER.error("", throwables);
         }
         return getMaxId();
     }

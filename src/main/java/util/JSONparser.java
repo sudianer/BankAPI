@@ -68,6 +68,17 @@ public class JSONparser {
         return objectMapper.valueToTree(object);
     }
 
+    public static String oneLineJsonString(JsonNode node){
+        ObjectWriter objectWriter = objectMapper.writer();
+        String result = "";
+        try {
+            result = objectWriter.writeValueAsString(node);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     public static String toJsonString(JsonNode node){
         ObjectWriter objectWriter = objectMapper.writer();
         objectWriter = objectWriter.with(SerializationFeature.INDENT_OUTPUT);

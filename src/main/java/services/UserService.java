@@ -5,7 +5,7 @@ import repository.UserRepository;
 
 import java.util.List;
 
-public class UserService {
+public class UserService{
 
     UserRepository userRepository;
 

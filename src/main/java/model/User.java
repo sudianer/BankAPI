@@ -73,10 +73,11 @@ public class User {
 
     @Override
     public String toString() {
-        return  "{" +
-                "\"id\" : " +"\""+ id + "\"," +
-                "\"firstName\" : " + "\"" +firstName + "\"," +
-                "\"secondName\" : " + "\"" + secondName + "\"" +
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", secondName='" + secondName + '\'' +
+                ", accounts=" + accounts +
                 '}';
     }
 }

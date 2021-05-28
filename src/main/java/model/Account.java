@@ -79,7 +79,7 @@ public class Account {
 
     @Override
     public String toString() {
-        return "{" +
+        return "Account{" +
                 "id=" + id +
                 ", userID=" + userID +
                 ", number='" + number + '\'' +

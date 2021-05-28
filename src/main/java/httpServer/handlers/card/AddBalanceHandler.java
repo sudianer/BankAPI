@@ -1,10 +1,11 @@
-package httpServer.handlers;
+package httpServer.handlers.card;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import httpServer.utils.ServiceContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.CardService;
+import util.JSONparser;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,12 +13,10 @@ import java.io.OutputStream;
 public class AddBalanceHandler implements HttpHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AddBalanceHandler.class);
 
-	CardService cardService;
 	long cardId;
 	long sum;
 
-	public AddBalanceHandler(CardService cardService, long cardId, long sum){
-		this.cardService = cardService;
+	public AddBalanceHandler(long cardId, long sum){
 		this.cardId = cardId;
 		this.sum = sum;
 	}
@@ -26,8 +25,9 @@ public class AddBalanceHandler implements HttpHandler {
 	public void handle(HttpExchange exchange) throws IOException {
 		LOGGER.info("Started");
 
-		String response = "Id: " + cardId;
-		response += " new Balance: " + cardService.addBalance(cardId, sum);
+		long newBalance = ServiceContainer.getCardService().addBalance(cardId, sum);
+		String response = "Card id: " + cardId + "newBalance is: " + newBalance;
+		response = JSONparser.toJsonString(response);
 
 		OutputStream outputStream = exchange.getResponseBody();
 

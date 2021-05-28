@@ -1,23 +1,27 @@
-package httpServer.handlers;
+package httpServer.handlers.card;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import httpServer.handlers.ROUTING;
+import httpServer.handlers.user.GetAllUsersHandler;
+import httpServer.utils.ServiceContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.CardService;
 import util.JSONparser;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
 
 public class GetAccountCardsHandler implements HttpHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GetAllUsersHandler.class);
 
-	CardService cardService;
+	Map<ROUTING, String > pathParameters;
 	long accountId;
 
-	public GetAccountCardsHandler(CardService cardService, long accountId){
-		this.cardService = cardService;
+	public GetAccountCardsHandler(Map<ROUTING, String> pathParameters, long accountId){
+		pathParameters.remove(ROUTING.CARDS);
+		this.pathParameters = pathParameters;
 		this.accountId = accountId;
 	}
 	@Override
@@ -28,7 +32,14 @@ public class GetAccountCardsHandler implements HttpHandler {
 
 		StringBuilder response = new StringBuilder();
 
-		response.append(JSONparser.toJsonString(cardService.getByAccountId(accountId)));
+		if(!pathParameters.isEmpty()){
+			if(pathParameters.get(ROUTING.CARD_ID).equalsIgnoreCase(ROUTING.NEWCARD.toString())){
+				new PostNewCardHandler(accountId).handle(exchange);
+			}
+			new GetOneCardHandler(pathParameters, accountId).handle(exchange);
+		}
+
+		response.append(JSONparser.toJsonString(ServiceContainer.getCardService().getByAccountId(accountId)));
 
 		exchange.sendResponseHeaders(200, response.toString().getBytes().length);
 

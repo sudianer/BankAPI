@@ -40,7 +40,11 @@ public class AccountDAO {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        assert account != null;
+        if(account == null){
+            LOGGER.info("No account with id: " + id);
+            return null;
+        }
+
         LOGGER.info("Account Selected from database, id: " + account.getId());
         return account;
     }

@@ -5,7 +5,7 @@ import repository.AccountRepository;
 
 import java.util.List;
 
-public class AccountService {
+public class AccountService{
     AccountRepository accountRepository;
 
     public AccountService(AccountRepository accountRepository) {

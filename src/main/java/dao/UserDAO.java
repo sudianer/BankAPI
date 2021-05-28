@@ -3,6 +3,7 @@ package dao;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.rmi.log.LogInputStream;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -43,8 +44,11 @@ public class UserDAO {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        assert user != null;
-        LOGGER.info("User Selected from database, id: " + user.getId());
+        if(user == null) {
+            LOGGER.info("User Selected from database not exist");
+            return null;
+        }
+        LOGGER.info("User selected from database, id: " + user.getId());
         return user;
     }
 
