@@ -3,9 +3,9 @@ package util;
 import dao.AccountDAO;
 import dao.CardDAO;
 import dao.UserDAO;
-import repository.AccountRepository;
-import repository.CardRepository;
-import repository.UserRepository;
+import services.AccountService;
+import services.CardService;
+import services.UserService;
 
 import  java.sql.*;
 
@@ -17,9 +17,9 @@ public class DBconnection {
     AccountDAO accountDAO;
     CardDAO cardDAO;
 
-    UserRepository userRepository;
-    AccountRepository accountRepository;
-    CardRepository cardRepository;
+    UserService userService;
+    AccountService accountService;
+    CardService cardService;
 
     public DBconnection (String URL, String login, String password) throws SQLException {
         connection = DriverManager.getConnection(URL, login, password);
@@ -27,21 +27,9 @@ public class DBconnection {
         accountDAO = new AccountDAO(connection);
         cardDAO = new CardDAO(connection);
 
-        userRepository = new UserRepository(this.getUserDAO());
-        accountRepository = new AccountRepository(this.getAccountDAO());
-        cardRepository = new CardRepository(this.getCardDAO());
-    }
-
-    public UserRepository getUserRepository() {
-        return userRepository;
-    }
-
-    public AccountRepository getAccountRepository() {
-        return accountRepository;
-    }
-
-    public CardRepository getCardRepository() {
-        return cardRepository;
+        userService = new UserService(this.getUserDAO());
+        accountService = new AccountService(this.getAccountDAO(), userService);
+        cardService = new CardService(this.getCardDAO());
     }
 
     public UserDAO getUserDAO() {
@@ -54,5 +42,17 @@ public class DBconnection {
 
     public CardDAO getCardDAO() {
         return cardDAO;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public AccountService getAccountService() {
+        return accountService;
+    }
+
+    public CardService getCardService() {
+        return cardService;
     }
 }

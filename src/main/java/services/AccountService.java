@@ -1,30 +1,30 @@
 package services;
 
+import dao.AccountDAO;
 import model.Account;
-import repository.AccountRepository;
 
 import java.util.List;
 
 public class AccountService{
-    AccountRepository accountRepository;
+    AccountDAO accountDAO;
 
-    public AccountService(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
+    public AccountService(AccountDAO accountDAO, UserService userService) {
+        this.accountDAO = accountDAO;
     }
 
     public Account get(long id){
-       return accountRepository.get(id);
+       return accountDAO.get(id);
     }
 
     public List<Account> getAll(){
-        return accountRepository.getAll();
+        return accountDAO.getAll();
     }
 
     public void create(Account account){
-        accountRepository.create(account);
+        accountDAO.create(account);
     }
 
     public List<Account> getByUserID(long userID){
-        return accountRepository.getByUserId(userID);
+        return accountDAO.getByUserID(userID);
     }
 }

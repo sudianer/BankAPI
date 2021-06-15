@@ -34,10 +34,7 @@ public class GetUserAccountsHandler implements HttpHandler {
 		StringBuilder response = new StringBuilder();
 
 		if(!pathParameters.isEmpty()){
-			if(pathParameters.get(ROUTING.ACCOUNT_ID).equalsIgnoreCase(ROUTING.NEWACCOUNT.toString())){
-				new PostNewAccountHandler(userId).handle(exchange);
-			}
-			new GetOneAccountHandler(pathParameters, userId).handle(exchange);
+			selectNextHandler(exchange);
 		}
 
 		List<Account> accounts = ServiceContainer.getAccountService().getByUserID(userId);
@@ -57,5 +54,12 @@ public class GetUserAccountsHandler implements HttpHandler {
 		outputStream.close();
 
 		LOGGER.info("Done");
+	}
+
+	private void selectNextHandler(HttpExchange exchange) throws IOException {
+		if(pathParameters.get(ROUTING.ACCOUNT_ID).equalsIgnoreCase(ROUTING.NEWACCOUNT.toString())){
+			new PostNewAccountHandler(userId).handle(exchange);
+		}
+		new GetOneAccountHandler(pathParameters, userId).handle(exchange);
 	}
 }

@@ -40,9 +40,9 @@ public class Main {
 
         server.createContext("/",
                 new RoutingHandler(
-                    new UserService(dBconnection.getUserRepository()),
-                    new CardService(dBconnection.getCardRepository()),
-                    new AccountService(dBconnection.getAccountRepository()))
+                    dBconnection.getUserService(),
+                    dBconnection.getCardService(),
+                    dBconnection.getAccountService())
                 );
 
         server.start();

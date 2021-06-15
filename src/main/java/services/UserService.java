@@ -1,27 +1,26 @@
 package services;
 
+import dao.UserDAO;
 import model.User;
-import repository.UserRepository;
-
 import java.util.List;
 
 public class UserService{
 
-    UserRepository userRepository;
+    UserDAO userDAO;
 
-    public UserService(UserRepository userRepository){
-        this.userRepository = userRepository;
+    public UserService(UserDAO userDAO){
+        this.userDAO = userDAO;
     }
 
     public User get(long id){
-        return userRepository.get(id);
+        return userDAO.get(id);
     }
 
     public List<User> getAll(){
-        return userRepository.getAll();
+        return userDAO.getAll();
     }
 
     public void create(User user){
-        userRepository.create(user);
+        userDAO.create(user);
     }
 }

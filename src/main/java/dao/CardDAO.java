@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CardDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(CardDAO.class);
@@ -120,12 +119,44 @@ public class CardDAO {
     }
 
     public List<Card> getByAccountID(long id){
-        LOGGER.info("Getting cards by account_ID: " + id);
-        return new CardDAO(connection)
-                .getAll()
-                .stream()
-                .filter(card -> card.getAccountId() == id)
-                .collect(Collectors.toList());
+        String sql = "Select * FROM ACCOUNT WHERE ACCOUNT.USERID = ?";
+
+        List<Card> cards = new ArrayList<>();
+
+        try{
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, id);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                cards.add(
+                        new Card.Builder(resultSet.getLong("id"))
+                                .withAccountID(resultSet.getLong("AccountID"))
+                                .withNumber(resultSet.getString("Number"))
+                                .withBalance(resultSet.getLong("Balance"))
+                                .build()
+                );
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        LOGGER.info("Accounts by userID selected from database, userID: " + id);
+        return cards;
+    }
+
+    public long addBalance(long id, long balance){
+
+        String sql = "UPDATE CARD SET CARD.BALANCE = ? WHERE CARD.ID = ?";
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, balance);
+            preparedStatement.setLong(2, id);
+            resultSet = preparedStatement.executeQuery();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return get(id).getBalance();
     }
 
     private long getMaxId(){

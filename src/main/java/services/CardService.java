@@ -1,35 +1,34 @@
 package services;
 
+import dao.CardDAO;
 import model.Card;
-import repository.CardRepository;
-
 import java.util.List;
 
 public class CardService{
 
-    CardRepository cardRepository;
+    CardDAO cardDAO;
 
-    public CardService(CardRepository cardRepository){
-        this.cardRepository = cardRepository;
+    public CardService(CardDAO cardDAO){
+        this.cardDAO = cardDAO;
     }
 
     public Card get(long id){
-        return cardRepository.get(id);
+        return cardDAO.get(id);
     }
 
     public List<Card> getAll(){
-        return cardRepository.getAll();
+        return cardDAO.getAll();
     }
 
     public void create(Card card){
-        cardRepository.create(card);
+        cardDAO.create(card);
     }
 
     public List<Card> getByAccountId(long accountId){
-        return cardRepository.getCardsByAccountId(accountId);
+        return cardDAO.getByAccountID(accountId);
     }
 
     public long addBalance(long id, long balance){
-        return cardRepository.addBalance(id, balance);
+        return cardDAO.addBalance(id, balance);
     }
 }

@@ -7,11 +7,9 @@ import org.slf4j.LoggerFactory;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class AccountDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountDAO.class);
-    private final CardDAO cardDAO = new CardDAO(connection);
 
     private static Connection connection;
     private static PreparedStatement preparedStatement;
@@ -34,7 +32,6 @@ public class AccountDAO {
                 account = new Account.Builder(id)
                         .withUserID(resultSet.getLong("UserID"))
                         .withNumber(resultSet.getString("Number"))
-                        .withCards(cardDAO.getByAccountID(id))
                         .build();
             }
         } catch (SQLException throwables) {
@@ -62,7 +59,6 @@ public class AccountDAO {
                         new Account.Builder(resultSet.getLong("id"))
                         .withUserID(resultSet.getLong("UserID"))
                         .withNumber(resultSet.getString("Number"))
-                        .withCards(cardDAO.getByAccountID(resultSet.getLong("id")))
                         .build()
                 );
             }
@@ -119,11 +115,29 @@ public class AccountDAO {
     }
 
     public List<Account> getByUserID(long userID){
-        LOGGER.info("Getting accounts by user_ID: " + userID);
-        return getAll()
-                .stream()
-                .filter(account -> account.getUserID() == userID)
-                .collect(Collectors.toList());
+        String sql = "Select * FROM ACCOUNT WHERE ACCOUNT.USERID = ?";
+
+        List<Account> accounts = new ArrayList<>();
+
+        try{
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, userID);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                accounts.add(
+                        new Account.Builder(resultSet.getLong("id"))
+                                .withUserID(resultSet.getLong("UserID"))
+                                .withNumber(resultSet.getString("Number"))
+                                .build()
+                );
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        LOGGER.info("Accounts by userID selected from database, userID: " + userID);
+        return accounts;
     }
 
     private long getMaxID(){

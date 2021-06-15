@@ -38,7 +38,6 @@ public class PostNewAccountHandler implements HttpHandler {
 		assert account != null;
 		account = new Account.Builder(0)
 				.withNumber(account.getNumber())
-				.withCards(account.getCards())
 				.withUserID(userID)
 				.build();
 

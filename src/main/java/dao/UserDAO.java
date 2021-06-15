@@ -3,7 +3,6 @@ package dao;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.rmi.log.LogInputStream;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import java.util.List;
 
 public class UserDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDAO.class);
-    private final AccountDAO accountDAO = new AccountDAO(connection);
 
     private static Connection connection;
     private static PreparedStatement preparedStatement;
@@ -38,7 +36,6 @@ public class UserDAO {
                 user = new User.Builder(resultSet.getLong("id"))
                         .withFirstName(resultSet.getString("firstName"))
                         .withSecondName(resultSet.getString("secondName"))
-                        .withAccountList(accountDAO.getByUserID(resultSet.getLong("id")))
                         .build();
             }
         } catch (SQLException throwables) {

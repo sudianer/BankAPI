@@ -26,6 +26,7 @@ public class GetAllUsersHandler implements HttpHandler {
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
 
+
 		LOGGER.info("Started");
 
 		OutputStream outputStream = exchange.getResponseBody();

@@ -1,13 +1,10 @@
 package model;
 
-import java.util.List;
-
 public class User {
 
     private long id;
     private String firstName;
     private String secondName;
-    private List<Account> accounts;
 
     public long getId() {
         return id;
@@ -20,10 +17,6 @@ public class User {
     public String getSecondName() {
         return secondName;
     }
-
-    public List<Account> getAccounts(){ return accounts; }
-
-    public void setAccounts(List<Account> accounts){ this.accounts = accounts; }
 
     public User(){
     }
@@ -38,14 +31,12 @@ public class User {
         this.id = builder.id;
         this.firstName = builder.firstName;
         this.secondName = builder.secondName;
-        this.accounts = builder.accountList;
     }
 
     public static class Builder {
         private final long id;
         private String firstName;
         private String secondName;
-        private List<Account> accountList;
 
         public Builder(long id){
             this.id = id;
@@ -61,11 +52,6 @@ public class User {
             return this;
         }
 
-        public Builder withAccountList(List<Account> accountList){
-            this.accountList = accountList;
-            return this;
-        }
-
         public User build(){
             return new User(this);
         }
@@ -77,7 +63,6 @@ public class User {
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", secondName='" + secondName + '\'' +
-                ", accounts=" + accounts +
                 '}';
     }
 }
